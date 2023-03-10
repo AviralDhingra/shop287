@@ -4,8 +4,8 @@ import Navbar from "./components/Navbar";
 // import Protected from "./components/Protected";
 import { AuthContextProvider } from "./context/AuthContext";
 import Home from "./pages/Home";
-import ProductPage from "./pages/ProductPage";
 import Signin from "./pages/Signin";
+import ProductPage from "./templates/ProductPage";
 
 function App() {
   return (

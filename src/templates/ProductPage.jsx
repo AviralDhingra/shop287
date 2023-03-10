@@ -1,31 +1,49 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { products } from "../ProductHighlights";
+import { products } from "../data/ProductHighlights";
+
+import { addDoc, collection } from "firebase/firestore";
+import { UserAuth } from "../context/AuthContext";
+import { db } from "../data/firestore-data";
+
 // import "./App.css";
 // import "./ProductPage.css";
 
 export default function ProductPage() {
   const productID = useParams().id;
-  console.log(productID);
+  // console.log(productID);
   const [count, setCount] = useState(1);
 
   const incrementCount = () => {
     setCount(count + 1);
-    // console.log(count);
   };
 
   const decrementCount = () => {
     if (count >= 2) {
       setCount(count - 1);
-      // console.log(count);
     }
   };
-  const productName = products[productID - 1].name;
-  const productPrice = products[productID - 1].price;
-  const img = products[productID - 1].imageSrc;
 
-  const productDescription = products[productID - 1].productDescription;
+  const product = products[productID - 1];
+  const productName = product.name;
+  const productPrice = product.price;
+  const img = product.imageSrc;
+  const productDescription = product.productDescription;
+
   const imgSize = 600;
+
+  const { user } = UserAuth();
+
+  function AddOrder() {
+    console.log("Working...");
+    const ordersRef = collection(db, "orders");
+    addDoc(ordersRef, {
+      ProductID: productID,
+      UserID: user.uid,
+    }).then((res) => {
+      console.log(res);
+    });
+  }
 
   return (
     <React.Fragment>
@@ -57,9 +75,12 @@ export default function ProductPage() {
               </button>
             </div>
             <button className="h-[50px] flex-grow basis-3/4 items-center rounded bg-orange-600 py-2 px-4 hover:bg-orange-500">
-              <span className="text-center text-xl font-bold text-white">
+              <button
+                className="text-center text-xl font-bold text-white"
+                onClick={AddOrder}
+              >
                 Buy Now
-              </span>
+              </button>
             </button>
           </div>
         </div>

@@ -1,11 +1,11 @@
 // import Image from "next/image";
 import React from "react";
 import { Link } from "react-router-dom";
+import heroImage from "../assets/images/hero_image.png";
 import FeatureCard from "../components/FeatureCard";
 import Footer from "../components/Footer";
-import { products } from "../ProductHighlights";
-import heroImage from "./hero_image_2.png";
-import qualities from "./Qualities";
+import { products } from "../data/ProductHighlights";
+import qualities from "../data/USP_List";
 
 const Home = () => {
   return (
