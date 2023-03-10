@@ -4,7 +4,7 @@ import Navbar from "./components/Navbar";
 // import Protected from "./components/Protected";
 import { AuthContextProvider } from "./context/AuthContext";
 import Home from "./pages/Home";
-// import ProductPage from "./pages/ProductPage";
+import ProductPage from "./pages/ProductPage";
 import Signin from "./pages/Signin";
 
 function App() {
@@ -15,6 +15,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/signin" element={<Signin />} />
+          <Route path="/product/:id" element={<ProductPage />} />
         </Routes>
       </AuthContextProvider>
     </div>
