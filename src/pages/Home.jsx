@@ -1,13 +1,38 @@
-// import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import heroImage from "../assets/images/hero_image.png";
 import FeatureCard from "../components/FeatureCard";
 import Footer from "../components/Footer";
-import { products } from "../data/ProductHighlights";
+// import getProducts from "../data/ProductHighlights";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../data/firestore-data";
 import qualities from "../data/USP_List";
 
-const Home = () => {
+function Home() {
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    const productsRef = collection(db, "products");
+
+    getDocs(productsRef).then((res) => {
+      const ords = res.docs.map((doc) => ({
+        data: doc.data(),
+        id: doc.id,
+      }));
+
+      const products = ords.map((ord) => ({
+        id: ord.id,
+        name: ord.data.name,
+        price: ord.data.price,
+        imageSrc: ord.data.imageSrc,
+        imageAlt: ord.data.imageAlt,
+        productDescription: ord.data.productDescription,
+      }));
+
+      setProducts(products);
+    });
+  }, []);
+
   return (
     <React.Fragment>
       <div className="mx-14">
@@ -68,7 +93,7 @@ const Home = () => {
                   <div className="min-h-80 aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75 lg:aspect-none lg:h-80">
                     <img
                       src={product.imageSrc}
-                      alt={product.imageAlt}
+                      alt="Product"
                       className="h-full w-full object-cover object-center lg:h-full lg:w-full"
                     />
                   </div>
@@ -96,6 +121,7 @@ const Home = () => {
         <div className="bg-gray-100 rounded-lg flex place-content-evenly p-8 mb-10 space-x-6 mx-72">
           {qualities.map((quality) => (
             <FeatureCard
+              key={quality.id}
               name={quality.name}
               description={quality.description}
               className="grow basis-0"
@@ -106,6 +132,6 @@ const Home = () => {
       <Footer />
     </React.Fragment>
   );
-};
+}
 
 export default Home;
