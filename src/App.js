@@ -1,10 +1,11 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
-// import Protected from "./components/Protected";
 import { AuthContextProvider } from "./context/AuthContext";
 import Home from "./pages/Home";
+import NotFound from "./pages/NotFound";
 import Signin from "./pages/Signin";
+import UnderDevelopment from "./pages/UnderDevelopment";
 import ProductPage from "./templates/ProductPage";
 
 function App() {
@@ -16,6 +17,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/signin" element={<Signin />} />
           <Route path="/product/:id" element={<ProductPage />} />
+          <Route path="/under-development" element={<UnderDevelopment />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthContextProvider>
     </div>

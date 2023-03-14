@@ -7,6 +7,8 @@ import { db } from "../data/firestore-data";
 
 function Home() {
   const [products, setProducts] = useState([]);
+  const [showNotification, setShowNotification] = useState(false);
+  const [showNotificationCart, setshowNotificationCart] = useState(false);
 
   useEffect(() => {
     const productsRef = collection(db, "products");
@@ -31,19 +33,44 @@ function Home() {
   }, []);
 
   const productID = useParams().id;
-  console.log(productID);
+  // console.log(productID);
 
   const { user } = UserAuth();
 
+  function RmvNotif() {
+    setShowNotification(false);
+  }
+
+  function RmvNotifCart() {
+    setshowNotificationCart(false);
+  }
+
   function AddOrder() {
-    console.log("Working...");
+    console.log("Working (Buy Now)...");
     const ordersRef = collection(db, "orders");
     addDoc(ordersRef, {
       ProductID: productID,
       UserID: user.uid,
-    }).then((res) => {
-      console.log(res);
+      Quantity: count,
     });
+    setShowNotification(true);
+    setTimeout(() => {
+      RmvNotif();
+    }, 3000);
+  }
+
+  function AddToCart() {
+    console.log("Working (Cart)...");
+    const ordersRef = collection(db, "cart");
+    addDoc(ordersRef, {
+      ProductID: productID,
+      UserID: user.uid,
+      Quantity: count,
+    });
+    setshowNotificationCart(true);
+    setTimeout(() => {
+      RmvNotifCart();
+    }, 3000);
   }
 
   const [count, setCount] = useState(1);
@@ -94,13 +121,21 @@ function Home() {
                       +
                     </button>
                   </div>
-                  <button className="h-[50px] flex-grow basis-3/4 items-center rounded bg-orange-600 py-2 px-4 hover:bg-orange-500">
-                    <button
-                      className="text-center text-xl font-bold text-white"
-                      onClick={AddOrder}
-                    >
+                  <button
+                    className="h-[50px] flex-grow basis-3/4 items-center rounded bg-orange-600 py-2 px-4 hover:bg-orange-500"
+                    onClick={AddOrder}
+                  >
+                    <span className="text-center text-xl font-bold text-white">
                       Buy Now
-                    </button>
+                    </span>
+                  </button>
+                  <button
+                    className="h-[50px] flex-grow basis-3/4 items-center rounded bg-orange-600 py-2 px-4 hover:bg-orange-500"
+                    onClick={AddToCart}
+                  >
+                    <span className="text-center text-xl font-bold text-white">
+                      Add To Cart
+                    </span>
                   </button>
                 </div>
               </div>
@@ -108,7 +143,39 @@ function Home() {
           );
         }
       })}
-      <Footer />
+      {showNotification && (
+        <div
+          className="absolute top-28 right-0 m-4 mr-12 p-4 text-white rounded inline-flex space-x-3"
+          style={{
+            backgroundColor: "#C03784",
+          }}
+        >
+          <p>Your Order Was Placed!</p>
+          <button
+            className="hover:cursor-pointer text-gray-300"
+            onClick={RmvNotif}
+          >
+            [X]
+          </button>
+        </div>
+      )}
+      {showNotificationCart && (
+        <div
+          className="absolute top-28 right-0 m-4 mr-12 p-4 text-white rounded inline-flex space-x-3"
+          style={{
+            backgroundColor: "#C03784",
+          }}
+        >
+          <p>Item Is Added In Cart</p>
+          <button
+            className="hover:cursor-pointer text-gray-300"
+            onClick={RmvNotifCart}
+          >
+            [X]
+          </button>
+        </div>
+      )}
+      <Footer shortPage="true" />
     </React.Fragment>
   );
 }

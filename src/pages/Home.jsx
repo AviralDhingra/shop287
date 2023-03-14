@@ -20,14 +20,15 @@ function Home() {
         id: doc.id,
       }));
 
-      const products = ords.map((ord) => ({
-        id: ord.id,
-        name: ord.data.name,
-        price: ord.data.price,
-        imageSrc: ord.data.imageSrc,
-        imageAlt: ord.data.imageAlt,
-        productDescription: ord.data.productDescription,
-      }));
+      const products = ords
+        .map((ord) => ({
+          id: ord.id,
+          name: ord.data.name,
+          price: ord.data.price,
+          imageSrc: ord.data.imageSrc,
+        }))
+        .slice(0, 4);
+      // I am slicing because you only need top 4 products for the highlights section
 
       setProducts(products);
     });
