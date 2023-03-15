@@ -2,6 +2,7 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import { AuthContextProvider } from "./context/AuthContext";
+// import Cart from "./pages/Cart";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Signin from "./pages/Signin";
@@ -18,6 +19,7 @@ function App() {
           <Route path="/signin" element={<Signin />} />
           <Route path="/product/:id" element={<ProductPage />} />
           <Route path="/under-development" element={<UnderDevelopment />} />
+          {/* <Route path="/cart" element={<Cart />} /> */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthContextProvider>
