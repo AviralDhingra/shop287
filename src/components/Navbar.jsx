@@ -1,7 +1,7 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { Avatar } from "@mui/material";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, deleteDoc, getDocs } from "firebase/firestore";
 import { default as React, Fragment, useEffect, useState } from "react";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { Link } from "react-router-dom";
@@ -9,11 +9,12 @@ import { UserAuth } from "../context/AuthContext";
 import { db } from "../data/firestore-data";
 
 const Navbar = () => {
-  const [cartItems, setCartItems] = useState([]);
-  const { user, logOut } = UserAuth();
   const [open, setOpen] = useState(false);
+  const [cartItems, setCartItems] = useState([]);
   const [productsDisplay, setproductsDisplay] = useState([]);
   const [subtotal, setSubtotal] = useState(0);
+
+  const { user, logOut } = UserAuth();
 
   useEffect(() => {
     const cartRef = collection(db, "cart");
@@ -25,7 +26,7 @@ const Navbar = () => {
       }));
 
       const items = ords.map((ord) => ({
-        itemID: ord.id,
+        OrderID: ord.id,
         ProductID: ord.data.ProductID,
         Quantity: ord.data.Quantity,
         UserID: ord.data.UserID,
@@ -60,6 +61,7 @@ const Navbar = () => {
           if (product.id === item.ProductID) {
             product.Quantity = item.Quantity;
             product.seller = "In House";
+            product.OrderID = item.OrderID;
             products.push(product);
           }
         }
@@ -249,6 +251,40 @@ const Navbar = () => {
 
                                       <div className="flex">
                                         <button
+                                          onClick={() => {
+                                            // const id = product.OrderID;
+                                            // console.log(id);
+                                            // const docRef = collection(
+                                            //   db,
+                                            //   "cart"
+                                            // );
+                                            // console.log(docRef);
+                                            // const doc_del = getDoc(docRef, id);
+                                            let doc_del = [];
+                                            for (
+                                              let i = 0;
+                                              i < cartItems.length;
+                                              i++
+                                            ) {
+                                              const item = cartItems[i];
+                                              if (
+                                                item.ProductID === product.id
+                                              ) {
+                                                doc_del = item;
+                                              }
+                                            }
+                                            console.log(doc_del);
+
+                                            deleteDoc(doc_del)
+                                              .then(() => {
+                                                console.log(
+                                                  "Entire Document has been deleted successfully."
+                                                );
+                                              })
+                                              .catch((error) => {
+                                                console.log(error);
+                                              });
+                                          }}
                                           type="button"
                                           className="font-medium text-red-600 hover:text-red-500"
                                         >
@@ -273,12 +309,13 @@ const Navbar = () => {
                           Shipping & Taxes Calculated During Checkout
                         </p>
                         <div className="mt-6">
-                          <a
-                            href="#"
+                          <Link
+                            to="/checkout"
                             className="flex items-center justify-center rounded-md border border-transparent bg-red-500 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-red-400"
+                            onClick={() => setOpen(false)}
                           >
                             Checkout
-                          </a>
+                          </Link>
                         </div>
                         <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
                           <p>
